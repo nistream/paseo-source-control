@@ -2,7 +2,7 @@
 
 The plugin runs filesystem and VCS operations on the selected Paseo daemon. Shared Zod RPC contracts define repository descriptors, status, diff, history and revision responses. The daemon entry registers host settings and read-only RPC handlers. No workspace or agent directory is changed.
 
-Repository identity includes VCS kind, canonical root and inspection scope. Discovery checks containing roots with Git/SVN commands, then traverses bounded nested directories, skipping metadata, common build/dependency trees and directory symlinks. Git metadata files are supported. Explicit configuration can select a broader scope; automatic ancestor detection defaults to the workspace subtree. Overlapping Git/SVN descriptors remain independent.
+Repository identity includes VCS kind, canonical root and inspection scope. Discovery checks containing roots with Git/SVN commands, then traverses bounded nested directories, skipping metadata, common build/dependency trees and directory symlinks. Git metadata files are supported. Explicit configuration takes priority over automatic discoveries with identical identities. Workspace associations compare canonical paths, including symlink aliases; unavailable associations emit warnings. Explicit configuration can select a broader scope; automatic ancestor detection defaults to the workspace subtree. Overlapping Git/SVN descriptors remain independent.
 
 Discovery tracks explicitly configured descriptor IDs so automatic probes cannot replace their labels or descriptors. Configured workspace filters use canonical filesystem identity, including symlink aliases. Unavailable configured workspaces are skipped with a warning in the bounded discovery response; reachable nonmatching workspaces are skipped silently.
 

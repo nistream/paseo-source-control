@@ -2,7 +2,7 @@
 
 A read-only Paseo plugin for Git and SVN working copies. Its Explorer panel and workspace tab show repository selection, working-copy changes, file diffs, paginated history and revision details. Ancestor repositories, nested repositories, Git worktrees and overlapping Git/SVN copies can be inspected without changing your workspace or agent directory.
 
-The foundation is implemented and under review. The local plugin runs; live UI validation is in progress. Graphs and stage/commit/update/revert/merge actions are future work.
+The read-only foundation is implemented, independently reviewed, and running on the local daemon. Git/SVN adapter tests and Paseo browser interaction, theme and desktop/compact layout checks pass. Native mobile clients and non-macOS hosts still need integration validation. Graphs and stage/commit/update/revert/merge actions are future work.
 
 ## Install and run
 
