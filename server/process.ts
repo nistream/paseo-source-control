@@ -70,8 +70,11 @@ export function run(executable: string, args: string[], options: CommandOptions)
 /** Request keys are random per panel; cancellation never relies on SDK AbortSignal. */
 export class Requests {
   private readonly active = new Map<string, AbortController>();
+  private readonly operations = new Set<AbortController>();
   private readonly cancelled = new Map<string, number>();
+  private disposed = false;
   async execute<T>(key: string | undefined, work: (signal: AbortSignal) => Promise<T>): Promise<T> {
+    if (this.disposed) throw new CommandError("Plugin stopped", "cancelled");
     for (const [id, time] of this.cancelled) if (time < Date.now() - 60000) this.cancelled.delete(id);
     const controller = new AbortController();
     if (key) {
@@ -79,8 +82,12 @@ export class Requests {
       if (this.cancelled.has(key)) throw new CommandError("Request cancelled", "cancelled");
       this.active.set(key, controller);
     }
+    this.operations.add(controller);
     try { return await work(controller.signal); }
-    finally { if (key) this.active.delete(key); }
+    finally {
+      this.operations.delete(controller);
+      if (key) this.active.delete(key);
+    }
   }
   cancel(key: string): boolean {
     const controller = this.active.get(key);
@@ -91,7 +98,9 @@ export class Requests {
     return !!controller;
   }
   dispose(): void {
-    for (const controller of this.active.values()) controller.abort();
+    this.disposed = true;
+    for (const controller of this.operations) controller.abort();
+    this.operations.clear();
     this.active.clear();
     this.cancelled.clear();
   }

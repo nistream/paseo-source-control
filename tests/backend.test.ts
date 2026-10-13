@@ -42,6 +42,20 @@ const svnAdd = (root: string, file: string) => command(root, "svn", ["add", "--"
 const svnCommit = (root: string, message: string) => command(root, "svn", ["commit", "--non-interactive", "-m", message]);
 
 describe("subprocess limits and request lifetime", () => {
+  it("disposes unkeyed operations and rejects work after shutdown", async () => {
+    const cwd = await temp();
+    const requests = new Requests();
+    let operationSignal!: AbortSignal;
+    const pending = requests.execute(undefined, (abortSignal) => {
+      operationSignal = abortSignal;
+      return run(process.execPath, ["-e", "setTimeout(()=>process.stdout.write('completed after dispose'),10000)"], { cwd, signal: abortSignal });
+    });
+    const check = expect(pending).rejects.toMatchObject({ reason: "cancelled" });
+    requests.dispose();
+    expect(operationSignal.aborted).toBe(true);
+    await check;
+    await expect(requests.execute(undefined, async () => "should never start")).rejects.toMatchObject({ reason: "cancelled" });
+  });
   it("enforces actual timeout, combined output cap, missing executable and literal argv", async () => {
     const cwd = await temp();
     await expect(run(process.execPath, ["-e", "setTimeout(()=>{}, 10000)"], { cwd, timeoutMs: 80 })).rejects.toMatchObject({ reason: "timeout" });
