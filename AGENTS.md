@@ -1,11 +1,61 @@
-# Agent instructions
+# AI Agent 工作指南
 
-Read `playground/HANDOVER.md` before implementation. If present, read the ignored `playground/LOCAL_TEST_PROJECT.md` for this machine's integration-test setup.
+本文件仅记录 AI Agent 执行任务时必须遵守的仓库级行为规则。项目介绍、目录结构、开发命令和验证方法统一维护在项目文档中，不在本文档重复。
 
-This is a general-purpose public Paseo plugin repository. Keep test-project paths, SVN URLs, credentials, proprietary source, diffs, logs, and history out of tracked files. Public fixtures must be synthetic.
+## 编码风格
 
-Verify current Paseo plugin APIs and app/daemon compatibility before implementing. Use documented extension surfaces; do not patch Paseo internals or assume the built-in Git panel can accept arbitrary repositories.
+- 对存在官方 Google Style Guide 的语言，遵循对应规范。
+- Google Style Guide 未覆盖的语言，遵循项目现有代码风格和约定。
+- 修改现有代码时，优先保持所在模块的一致性，避免无关格式化或风格重构。
 
-Keep plugin code and tests here. The external integration project is for read-only verification; use temporary synthetic repositories for mutations. Read that project's instructions before running commands there. Do not commit, revert, update, clean, or otherwise modify its working copies as part of plugin tests.
+## 项目记忆
 
-Implement incrementally, with meaningful parser/adapter tests and desktop plus compact-layout verification. Record completed milestones and remaining work in repository documentation. Do not present planned capabilities as implemented.
+每类项目记忆只保留一个事实来源：
+
+- `AGENTS.md`：仓库级工作规则、Agent 角色和记忆边界。
+- `README.md`：面向人类读者的简洁项目入口。只包含：
+  - 项目做什么。
+  - 如何部署、运行和使用服务。
+  - 人类开发者或维护者必须了解的其他重要事项。
+  - `docs/` 下重要文档的入口。
+- `docs/architecture.md`：当前架构、模型边界、重要文件和需要长期保留的实现事实。
+- `docs/plans/`：拟议工作、任务状态、验收标准和实现交接。
+- `docs/decisions/`：需要长期保留理由的非显而易见决策。
+- `docs/references/`：外部协议、研究资料和比较材料。
+- `docs/reviews/`：仅在用户明确要求生成或保存审查文档时使用。
+- `docs/integration/`：服务端与客户端之间的临时通信目录，不作为项目记忆的事实来源。
+- 代码和测试：已实现行为的最终事实来源。
+
+行为发生变化时：
+
+- 架构、模型边界或需要长期保留的实现事实发生变化时，更新 `docs/architecture.md`。
+- 对已有计划的实现任务，交接前更新对应计划的状态和结果。
+- 只有出现需要长期保留其理由的新决策时，才新增 `docs/decisions/<topic>.md`。
+- 当 `README.md` 中描述的项目用途、部署、运行、使用方式或重要文档入口发生变化时，同步更新 `README.md`。
+- 不得将长期架构事实重复维护在 Agent Skill、计划、`README.md` 或本文档中。计划可以记录完成当前任务所需的上下文，并引用对应的长期事实来源。
+- 不得将临时通信内容视为长期项目记忆。
+
+如果不同事实来源发生冲突：
+
+1. 以用户当前明确要求为最高优先级。
+2. 以当前代码和测试确认实际已实现行为。
+3. 修正与实际状态不一致的文档。
+4. 不得默默选择最方便的版本或忽略已发现的冲突。
+
+## Git 行为
+
+- 默认在 `main` 或 `master` 以外的分支上进行修改。
+- 不得覆盖、回滚或提交用户已有的无关改动。
+- 完成代码或文档修改后检查当前分支：
+  - 如果当前分支不是 `main` 或 `master`，自动提交本次任务涉及的文件供审查。
+  - 如果当前分支是 `main` 或 `master`，不要自动提交。
+- 提交时只包含本次任务涉及的文件。
+- 使用 Conventional Commits。
+- 合并前，将同一目标下无独立价值的琐碎提交整理为合理的提交历史。
+- 合并到目标分支时使用 `--no-ff`。
+
+## 语言规则
+
+- 回复用户时始终使用用户当前使用的语言。
+- 仓库中的 Markdown 文档统一使用中文，包括面向人类的说明文档和供 Agent 使用的文档。
+- 技术术语、产品名、协议名、框架名和代码标识符保留英文。
