@@ -54,8 +54,8 @@
 - 合并前，将同一目标下无独立价值的琐碎提交整理为合理的提交历史。
 - 合并到目标分支时使用 `--no-ff`。
 
-## 语言规则
+## Language rules
 
-- 回复用户时始终使用用户当前使用的语言。
-- 仓库中的 Markdown 文档统一使用中文，包括面向人类的说明文档和供 Agent 使用的文档。
-- 技术术语、产品名、协议名、框架名和代码标识符保留英文。
+- Respond in the language used by the user in their current message.
+- Write repository Markdown documentation in English.
+- Preserve product names, technical terms, protocol names, framework names, and code identifiers.
