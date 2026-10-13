@@ -34,4 +34,5 @@ Coordinator owns acceptance, integration verification, and final reporting. Impl
 
 - Initial working changes committed and pushed to `main` (`04c523b`).
 - Language requirements changed to English repository documentation and pushed (`40fe7f5`).
-- Implementation has not started. No plugin is installed by this task yet.
+- Backend checkpoint: typed contracts, host settings registration, bounded discovery, validated read-only Git/SVN status/diff/history/detail RPCs and explicit cancellation implemented. Strict typecheck and eight synthetic parser/adapter/process tests pass. Client panel and delivery documentation are still in progress. No plugin is installed by this implementer.
+- Coordinator independently bundled and smoke-tested the current backend against synthetic mixed repositories and the ignored read-only integration fixture. Discovery and status matched separate CLI expectations; pagination, scope isolation and bounded previews passed. This evidence predates the final commit and does not replace final review or UI QA. Private outputs remain outside the repository.

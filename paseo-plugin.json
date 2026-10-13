@@ -1,0 +1,9 @@
+{
+  "id": "source-control",
+  "name": "Source Control",
+  "description": "Read-only Git and SVN status, diffs, and history for Paseo workspaces.",
+  "requirements": {
+    "paseo": ">=0.11.2"
+  },
+  "media": []
+}
