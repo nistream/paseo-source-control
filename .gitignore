@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+playground/LOCAL_TEST_PROJECT.md
+playground/local-test-project.json
+playground/private/

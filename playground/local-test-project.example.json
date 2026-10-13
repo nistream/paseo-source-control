@@ -1,0 +1,15 @@
+{
+  "workspacePath": "/absolute/path/to/workspace",
+  "repositories": [
+    {
+      "kind": "svn",
+      "rootPath": "/absolute/path/to/ancestor-working-copy",
+      "scopePath": "/absolute/path/to/workspace"
+    },
+    {
+      "kind": "git",
+      "rootPath": "/absolute/path/to/workspace/Assets",
+      "scopePath": "/absolute/path/to/workspace/Assets"
+    }
+  ]
+}
