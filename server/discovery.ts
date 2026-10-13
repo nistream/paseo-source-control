@@ -26,6 +26,7 @@ const skipped = new Set([".git", ".svn", "node_modules", "Library", "Temp", "Log
 export async function discover(input: ListRepositoriesInput, signal: AbortSignal): Promise<ListRepositoriesOutput> {
   const workspace = await canonical(input.workspacePath);
   const repositories = new Map<string, RepositoryDescriptor>();
+  const configuredIds = new Set<string>();
   const warnings: ListRepositoriesOutput["warnings"] = [];
   let discoveryTruncated = false;
   const add = async (kind: VcsKind, directory: string, scope?: string, label?: string, explicit = false) => {
@@ -34,15 +35,21 @@ export async function discover(input: ListRepositoriesInput, signal: AbortSignal
       const target = scope ? await canonical(scope) : contains(root, workspace) ? workspace : root;
       if (!contains(root, target) || await detect(kind, target, signal) !== root) throw new Error("Scope is outside this repository");
       const repo = descriptor(kind, root, target, label);
-      if (explicit || !repositories.has(repo.id)) repositories.set(repo.id, repo);
+      // Discovery may visit an explicit root repeatedly (ancestor and nested
+      // probes). Never replace its configured label or descriptor.
+      if (!explicit && configuredIds.has(repo.id)) return;
+      if (explicit) configuredIds.add(repo.id);
+      repositories.set(repo.id, repo);
     } catch (error) {
       if (signal.aborted) throw error;
       if (explicit || error instanceof CommandError && error.reason !== "failed") warnings.push({ source: kind, message: (error as Error).message });
     }
   };
   for (const config of input.configured) {
-    if (config.workspacePath && path.resolve(config.workspacePath) !== workspace) continue;
-    try { await add(config.kind, await canonical(config.rootPath), config.scopePath, config.label, true); }
+    try {
+      if (config.workspacePath && await canonical(config.workspacePath) !== workspace) continue;
+      await add(config.kind, await canonical(config.rootPath), config.scopePath, config.label, true);
+    }
     catch (error) { if (signal.aborted) throw error; warnings.push({ source: config.kind, message: (error as Error).message }); }
   }
   // CLI root resolution sees ancestor metadata without scanning sibling directories.

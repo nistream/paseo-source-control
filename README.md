@@ -53,6 +53,8 @@ Select a changed file for a diff, or **History** for 25 entries per page and rev
 
 `scopePath` must resolve inside the detected root. Omitting it preserves the automatic subtree default. Set it to the root explicitly to inspect the whole repository. `workspacePath` restricts a configured entry to that workspace; omitting it makes the entry available in every workspace on this host. Custom labels override automatic labels for identical root/scope descriptors.
 
+Workspace associations compare canonical paths, so symlink aliases match the same workspace. An unavailable configured workspace produces a discovery warning and skips that entry; automatic discovery continues. A reachable different workspace simply does not match.
+
 Settings are shared across authorized clients on that daemon and persist through reloads. The draft captures its write revision; conflicting saves retain your draft and reject the write. Discard and reopen it to use the latest values. Settings changes rerun discovery on connected panels, but selected repositories are local to each panel. Do not put credentials in the settings document. SVN uses existing host authentication noninteractively; authentication/network errors are displayed and never trigger an update.
 
 ## Bounds and limitations

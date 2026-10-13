@@ -80,6 +80,48 @@ describe("subprocess limits and request lifetime", () => {
 });
 
 describe("Git adapter and discovery", () => {
+  it("preserves explicit labels when automatic discovery visits the same root and scope", async () => {
+    const { root, repo } = await gitRepo();
+    const found = await discover({
+      workspacePath: root,
+      configured: [{ kind: "git", rootPath: root, scopePath: root, label: "Synthetic custom label" }],
+      discovery: { maxDepth: 1, maxEntries: 100 },
+    }, signal());
+    // Both the containing-root probe and the .git marker probe encounter it.
+    expect(found.repositories.filter((item) => item.id === repo.id)).toEqual([
+      { ...repo, label: "Synthetic custom label" },
+    ]);
+  });
+  it("associates workspace aliases by canonical identity and warns for unavailable configured workspaces", async () => {
+    const { root, repo } = await gitRepo();
+    const aliases = await temp();
+    const alias = path.join(aliases, "workspace-alias");
+    await symlink(root, alias, "dir");
+    // Cover both an aliased active workspace and an aliased configured filter.
+    for (const workspacePath of [root, alias]) {
+      const found = await discover({
+        workspacePath,
+        configured: [{ kind: "git", rootPath: alias, scopePath: alias, workspacePath: alias, label: "Aliased workspace" }],
+        discovery: { maxDepth: 0, maxEntries: 100 },
+      }, signal());
+      expect(found.repositories.find((item) => item.id === repo.id)).toEqual({ ...repo, label: "Aliased workspace" });
+    }
+    const elsewhere = await temp();
+    const unavailable = path.join(aliases, "unavailable");
+    const found = await discover({
+      workspacePath: root,
+      configured: [
+        { kind: "git", rootPath: root, workspacePath: elsewhere, label: "Other workspace" },
+        { kind: "git", rootPath: root, workspacePath: unavailable, label: "Unavailable workspace" },
+      ],
+      discovery: { maxDepth: 0, maxEntries: 100 },
+    }, signal());
+    expect(found.repositories.find((item) => item.id === repo.id)?.label).toBe(repo.label);
+    expect(found.warnings.filter((warning) => warning.source === "git")).toEqual([
+      expect.objectContaining({ message: expect.stringContaining("ENOENT") }),
+    ]);
+    expect(found.warnings.length).toBeLessThanOrEqual(100);
+  });
   it("handles unborn HEAD, literal Unicode/space/dash paths, both staging states, binary and large previews", async () => {
     const { root, repo } = await gitRepo();
     expect((await history(repo, 25, undefined, signal())).entries).toEqual([]);

@@ -4,6 +4,8 @@ The plugin runs filesystem and VCS operations on the selected Paseo daemon. Shar
 
 Repository identity includes VCS kind, canonical root and inspection scope. Discovery checks containing roots with Git/SVN commands, then traverses bounded nested directories, skipping metadata, common build/dependency trees and directory symlinks. Git metadata files are supported. Explicit configuration can select a broader scope; automatic ancestor detection defaults to the workspace subtree. Overlapping Git/SVN descriptors remain independent.
 
+Discovery tracks explicitly configured descriptor IDs so automatic probes cannot replace their labels or descriptors. Configured workspace filters use canonical filesystem identity, including symlink aliases. Unavailable configured workspaces are skipped with a warning in the bounded discovery response; reachable nonmatching workspaces are skipped silently.
+
 `server/process.ts` executes argv without a shell, closes stdin, disables Git optional locks and prompts, enforces 15-second command timeouts and a combined 2 MiB output budget, and terminates cancelled processes. Diff output is limited to 256 KiB. UTF-8 locales retain Unicode SVN filenames. `server/xml.ts` reads SVN XML without DTD or external entity support. Status uses Git porcelain v2 with NUL paths or scoped SVN XML, without remote status queries. Git staging and SVN properties remain distinct.
 
 Every data RPC revalidates canonical root and scope. Untracked previews verify current status, resolve symlinks within scope, and read only bounded regular files. Git diffs disable external diff and text conversion. SVN local diffs use literal absolute paths, while info/log/historical diff commands use empty peg suffixes.
