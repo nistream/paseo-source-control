@@ -1,58 +1,58 @@
-# AI Agent 工作指南
+# AI agent working guidelines
 
-本文件仅记录 AI Agent 执行任务时必须遵守的仓库级行为规则。项目介绍、目录结构、开发命令和验证方法统一维护在项目文档中，不在本文档重复。
+This file contains only the repository-level rules that AI agents must follow. Project descriptions, directory structure, development commands, and verification methods belong in the project documentation and should not be repeated here.
 
-## 编码风格
+## Coding style
 
-- 对存在官方 Google Style Guide 的语言，遵循对应规范。
-- Google Style Guide 未覆盖的语言，遵循项目现有代码风格和约定。
-- 修改现有代码时，优先保持所在模块的一致性，避免无关格式化或风格重构。
+- Follow the official Google Style Guide for languages it covers.
+- For other languages, follow the project's existing style and conventions.
+- When modifying existing code, preserve consistency within its module and avoid unrelated formatting or style refactors.
 
-## 项目记忆
+## Project memory
 
-每类项目记忆只保留一个事实来源：
+Maintain one source of truth for each category of project memory:
 
-- `AGENTS.md`：仓库级工作规则、Agent 角色和记忆边界。
-- `README.md`：面向人类读者的简洁项目入口。只包含：
-  - 项目做什么。
-  - 如何部署、运行和使用服务。
-  - 人类开发者或维护者必须了解的其他重要事项。
-  - `docs/` 下重要文档的入口。
-- `docs/architecture.md`：当前架构、模型边界、重要文件和需要长期保留的实现事实。
-- `docs/plans/`：拟议工作、任务状态、验收标准和实现交接。
-- `docs/decisions/`：需要长期保留理由的非显而易见决策。
-- `docs/references/`：外部协议、研究资料和比较材料。
-- `docs/reviews/`：仅在用户明确要求生成或保存审查文档时使用。
-- `docs/integration/`：服务端与客户端之间的临时通信目录，不作为项目记忆的事实来源。
-- 代码和测试：已实现行为的最终事实来源。
+- `AGENTS.md`: repository-level rules, agent roles, and memory boundaries.
+- `README.md`: a concise entry point for human readers, containing only:
+  - What the project does.
+  - How to deploy, run, and use the service.
+  - Other essential information for developers or maintainers.
+  - Links to important documentation under `docs/`.
+- `docs/architecture.md`: current architecture, model boundaries, important files, and enduring implementation facts.
+- `docs/plans/`: proposed work, task status, acceptance criteria, and implementation handoffs.
+- `docs/decisions/`: non-obvious decisions whose rationale needs to be preserved.
+- `docs/references/`: external protocols, research, and comparisons.
+- `docs/reviews/`: use only when the user explicitly requests creating or saving review documents.
+- `docs/integration/`: temporary server/client communication, not a source of truth for project memory.
+- Code and tests: the definitive source of truth for implemented behavior.
 
-行为发生变化时：
+When behavior changes:
 
-- 架构、模型边界或需要长期保留的实现事实发生变化时，更新 `docs/architecture.md`。
-- 对已有计划的实现任务，交接前更新对应计划的状态和结果。
-- 只有出现需要长期保留其理由的新决策时，才新增 `docs/decisions/<topic>.md`。
-- 当 `README.md` 中描述的项目用途、部署、运行、使用方式或重要文档入口发生变化时，同步更新 `README.md`。
-- 不得将长期架构事实重复维护在 Agent Skill、计划、`README.md` 或本文档中。计划可以记录完成当前任务所需的上下文，并引用对应的长期事实来源。
-- 不得将临时通信内容视为长期项目记忆。
+- Update `docs/architecture.md` when architecture, model boundaries, or enduring implementation facts change.
+- For work covered by an existing plan, update that plan's status and results before handoff.
+- Add `docs/decisions/<topic>.md` only for a new decision whose rationale needs to be preserved.
+- Update `README.md` when its descriptions of purpose, deployment, operation, usage, or important documentation links change.
+- Do not duplicate enduring architecture facts in agent skills, plans, `README.md`, or this file. Plans may record context needed for the current task and reference the appropriate enduring source of truth.
+- Do not treat temporary communication as long-term project memory.
 
-如果不同事实来源发生冲突：
+When sources of truth conflict:
 
-1. 以用户当前明确要求为最高优先级。
-2. 以当前代码和测试确认实际已实现行为。
-3. 修正与实际状态不一致的文档。
-4. 不得默默选择最方便的版本或忽略已发现的冲突。
+1. Give the user's current explicit requirements highest priority.
+2. Verify implemented behavior against current code and tests.
+3. Correct documentation that disagrees with the actual state.
+4. Do not silently choose the most convenient version or ignore a discovered conflict.
 
-## Git 行为
+## Git behavior
 
-- 默认在 `main` 或 `master` 以外的分支上进行修改。
-- 不得覆盖、回滚或提交用户已有的无关改动。
-- 完成代码或文档修改后检查当前分支：
-  - 如果当前分支不是 `main` 或 `master`，自动提交本次任务涉及的文件供审查。
-  - 如果当前分支是 `main` 或 `master`，不要自动提交。
-- 提交时只包含本次任务涉及的文件。
-- 使用 Conventional Commits。
-- 合并前，将同一目标下无独立价值的琐碎提交整理为合理的提交历史。
-- 合并到目标分支时使用 `--no-ff`。
+- Make changes on a branch other than `main` or `master` by default.
+- Do not overwrite, revert, or commit the user's unrelated existing changes.
+- Check the current branch after modifying code or documentation:
+  - On a branch other than `main` or `master`, automatically commit task-related files for review.
+  - On `main` or `master`, do not automatically commit.
+- Include only files related to the current task in each commit.
+- Use Conventional Commits.
+- Before merging, consolidate trivial commits that share a goal and have no independent value into a meaningful history.
+- Use `--no-ff` when merging into the target branch.
 
 ## Language rules
 
