@@ -46,9 +46,16 @@ Coordinator owns acceptance, integration verification, and final reporting. Impl
 
 - Cleanup completed: temporary QA browser tabs, the synthetic Paseo workspace/project, generated repositories, and private temporary expectation files were removed. No real integration working copy was modified.
 
+## Post-restart visual verification (2026-10-14)
+
+- After the user reported an accidental MacBook restart, the coordinator verified that Paseo 0.11.2 and the installed `source-control` plugin were running, with no source changes or daemon configuration edits needed.
+- Browser clicks and screenshot capture now work. A new temporary synthetic SVN working copy with an overlapping Git repository was used; the real integration fixture was not accessed.
+- Captured and visually inspected all four desktop/compact and dark/light views: desktop 1440×1000 and compact 390×844 logical pixels (2× screenshots). Git staging groups and the staged diff were readable; SVN property status and its property diff were readable; compact repository paths wrapped without clipped controls or horizontal page overflow. No implementation change was required.
+- Four original PNG captures are retained in ignored local QA artifacts. They were not added to the public package or repository. This completes the previously outstanding screenshot/pixel-review check for the web layouts, while native mobile and other host OS checks remain separate.
+- The original System theme was restored. The temporary browser tab, Paseo workspace/project, and generated Git/SVN fixture were removed; only the local screenshot evidence remains.
+
 ## Remaining work
 
 - Native iOS/Android devices and non-macOS daemon integration tests.
-- Optional exportable screenshots and pixel-level visual review when browser capture is available.
 - History graphs and mutation features require separate design and acceptance; they are not implemented.
 - License selection and registry publishing remain owner decisions. The npm package remains private.
